@@ -1,38 +1,8 @@
 import http, { IncomingMessage, ServerResponse }  from 'http';
-
-interface Produto {
-    id: number
-    nome: string
-    descricao: string
-    preco: number
-    estoque: number
-    categoria_id: number
-    imagem?: string 
-}
-
-interface Morador {
-    id: number
-    nome: string
-    email: string
-    senha: string
-    condominio_id: number
-}
-
-interface CadastrarProdutoBody {
-    nome: string
-    descricao: string
-    preco: number
-    estoque: number
-    categoria_id: number
-    imagem?: string 
-} 
-
-interface CadastrarNovoMoradorBody {
-    nome: string
-    email: string
-    senha: string
-    condominio_id: number
-}
+import { rotasMoradores } from './routes/moradores.js';
+import { rotasProdutos } from './routes/produtos.js';
+import { respostaErro } from './utils/http.js';
+import { env } from './config/env.js';
 
 const server = http.createServer((req: IncomingMessage, res: ServerResponse) => {
     const method = req.method ?? 'GET';
@@ -40,18 +10,17 @@ const server = http.createServer((req: IncomingMessage, res: ServerResponse) => 
 
     console.log(`${req.method} ${req.url}`);
 
-    if(method === 'GET' && url === "/"){
-        res.writeHead(200, { 'Content-Type': 'application/json' })
-        res.end(JSON.stringify({ projeto: 'CondoShop', versao: '1.0' }))
-    } else if(method === "GET" && url === "/status"){
-        res.writeHead(200, {'Content-Type': "application/json"})
-        res.end(JSON.stringify({'status': 'online'}))
+    if(url.startsWith('/produtos')){
+        rotasProdutos(req, res, method, url);
+    } else if (url.startsWith('/moradores')){
+        rotasMoradores(req, res, method, url);
     } else {
-        res.writeHead(404, { 'Content-Type': 'application/json'})
-        res.end(JSON.stringify({erro: 'Rota não encontrada'}))
+        respostaErro(res, 404, "Rota Não encontrada!")
     }
+    
+    
 });
 
-server.listen(3000, () => {
-    console.log('CondoShop API rodando em http://localhost:3000')
-})
+server.listen(env.PORT, () => {
+    console.log(`${env.APP_NAME} rodando na porta ${env.PORT}`)
+});
