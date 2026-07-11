@@ -1,4 +1,5 @@
 import http, { IncomingMessage, ServerResponse }  from 'http';
+import { RoleUsuario } from './types/index.js';
 
 interface Produto {
     id: number
@@ -16,6 +17,7 @@ interface Morador {
     email: string
     senha: string
     condominio_id: number
+    role: RoleUsuario
 }
 
 interface CadastrarProdutoBody {
