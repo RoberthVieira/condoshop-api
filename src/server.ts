@@ -1,5 +1,39 @@
 import http, { IncomingMessage, ServerResponse }  from 'http';
 
+interface Produto {
+    id: number
+    nome: string
+    descricao: string
+    preco: number
+    estoque: number
+    categoria_id: number
+    imagem?: string 
+}
+
+interface Morador {
+    id: number
+    nome: string
+    email: string
+    senha: string
+    condominio_id: number
+}
+
+interface CadastrarProdutoBody {
+    nome: string
+    descricao: string
+    preco: number
+    estoque: number
+    categoria_id: number
+    imagem?: string 
+} 
+
+interface CadastrarNovoMoradorBody {
+    nome: string
+    email: string
+    senha: string
+    condominio_id: number
+}
+
 const server = http.createServer((req: IncomingMessage, res: ServerResponse) => {
     const method = req.method ?? 'GET';
     const url = req.url ?? '/';
@@ -17,8 +51,6 @@ const server = http.createServer((req: IncomingMessage, res: ServerResponse) => 
         res.end(JSON.stringify({erro: 'Rota não encontrada'}))
     }
 });
-
-
 
 server.listen(3000, () => {
     console.log('CondoShop API rodando em http://localhost:3000')
