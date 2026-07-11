@@ -2,6 +2,7 @@ import http, { IncomingMessage, ServerResponse }  from 'http';
 import { rotasMoradores } from './routes/moradores.js';
 import { rotasProdutos } from './routes/produtos.js';
 import { respostaErro } from './utils/http.js';
+import { env } from './config/env.js';
 
 const server = http.createServer((req: IncomingMessage, res: ServerResponse) => {
     const method = req.method ?? 'GET';
@@ -20,6 +21,6 @@ const server = http.createServer((req: IncomingMessage, res: ServerResponse) => 
     
 });
 
-server.listen(3000, () => {
-    console.log('CondoShop API rodando em http://localhost:3000')
+server.listen(env.PORT, () => {
+    console.log(`${env.APP_NAME} rodando na porta ${env.PORT}`)
 });
