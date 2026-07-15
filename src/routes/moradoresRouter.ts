@@ -1,9 +1,10 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
+import moradoresController from "../controllers/moradoresController.js";
 
 const router = Router();
 
-router.get('/', (req: Request, res:Response) => {
-    res.status(200).json({data: []});
-});
+router.get('/', moradoresController.listar);
+router.get('/:id', moradoresController.buscar);
+router.post('/', moradoresController.criar);
 
 export default router;
