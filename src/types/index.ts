@@ -43,6 +43,7 @@ interface CadastrarNovoMoradorBody {
     email: string
     senha: string
     condominio_id: number
+    role: RoleUsuario
 }
 
 export {ApiResponse, ApiError, StatusPedido, RoleUsuario, Produto, Morador, CadastrarProdutoBody, CadastrarNovoMoradorBody};

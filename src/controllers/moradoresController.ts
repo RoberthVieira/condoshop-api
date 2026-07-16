@@ -1,28 +1,39 @@
 import { Request, Response } from "express";
 import { CadastrarNovoMoradorBody } from "../types/index.js";
+import moradoresModel from "../models/moradoresModel.js";
 
 interface MoradorParams {
     id: string
 }
 
 function listar(req:Request, res:Response): void {
-    res.status(200).json({data: []});
+    const moradores = moradoresModel.findAll()
+    res.status(200).json({data: [moradores]});
 };
 
 function buscar(req:Request<MoradorParams>, res:Response): void {
     const { id } = req.params;
-    res.status(200).json({data: { id }});
+    const morador = moradoresModel.findById(Number(id));
+
+    if(!morador){
+        res.status(404).json({erro: "Usuario não encontrado"})
+        return
+    }
+
+    res.status(200).json({data:  morador });
 }
 
 function criar(req:Request<{}, {}, CadastrarNovoMoradorBody>, res:Response): void {
-    const {nome, email, senha, condominio_id} = req.body;
+    const {nome, email, senha, condominio_id, role} = req.body;
 
-    if(!nome || !email || !senha || !condominio_id){
-        res.status(400).json({erro: "Os campos nome, email, senha e condominio_id são obrigatórios"});
+    if(!nome || !email || !senha || !condominio_id || !role){
+        res.status(400).json({erro: "Os campos nome, email, senha, condominio_id e role são obrigatórios"});
         return;
     }
 
-    res.status(201).json({data: {nome, email, senha, condominio_id}});
+    const novoMorador = moradoresModel.create(nome, email, senha, condominio_id, role)
+
+    res.status(201).json({data: novoMorador });
 };
 
 export default {listar, buscar, criar};
