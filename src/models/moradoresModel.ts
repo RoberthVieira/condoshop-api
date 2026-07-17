@@ -27,4 +27,28 @@ function create(nome:string, email:string, senha:string, condominio_id:number, r
     return novoMorador
 };
 
-export default {findAll, findById, create};
+function update(id: number, dados: Partial<Morador>): Morador | undefined {
+    const morador = findById(id);
+
+    if(!morador) return undefined
+
+    if(dados.nome) morador.nome = dados.nome;
+    if(dados.email) morador.email = dados.email;
+    if(dados.senha) morador.senha = dados.senha;
+    if(dados.condominio_id) morador.condominio_id = dados.condominio_id;
+    if(dados.role) morador.role = dados.role
+
+    return morador;
+};
+
+function remove(id: number): boolean {
+    const index = moradores.findIndex(m => m.id === id);
+
+    if(index === -1) return false
+
+    moradores.splice(index, 1);
+
+    return true
+}
+
+export default {findAll, findById, create, update, remove};

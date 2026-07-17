@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CadastrarNovoMoradorBody } from "../types/index.js";
+import { CadastrarNovoMoradorBody, Morador } from "../types/index.js";
 import moradoresModel from "../models/moradoresModel.js";
 
 interface MoradorParams {
@@ -8,7 +8,7 @@ interface MoradorParams {
 
 function listar(req:Request, res:Response): void {
     const moradores = moradoresModel.findAll()
-    res.status(200).json({data: [moradores]});
+    res.status(200).json({data: moradores});
 };
 
 function buscar(req:Request<MoradorParams>, res:Response): void {
@@ -36,4 +36,37 @@ function criar(req:Request<{}, {}, CadastrarNovoMoradorBody>, res:Response): voi
     res.status(201).json({data: novoMorador });
 };
 
-export default {listar, buscar, criar};
+function atualizar(req:Request<MoradorParams, {}, Partial<Morador>>, res:Response): void {
+    const { id } = req.params;
+    const {nome, email, senha, condominio_id, role} = req.body;
+    const morador = {
+        nome,
+        email,
+        senha,
+        condominio_id,
+        role
+    }
+
+    const moradorAtualizado = moradoresModel.update(Number(id), morador)
+
+    if(!moradorAtualizado){
+        res.status(404).json({erro: "Morador não encontrado"})
+        return
+    }
+
+    res.status(200).json({mensagem: "Dados alterados com sucesso!"})
+}
+
+function excluir(req:Request, res:Response): void {
+    const { id } = req.params
+
+    const excluir = moradoresModel.remove(Number(id));
+
+    if(!excluir){
+        res.status(404).json({erro: "id do moraador não encontrado"})
+        return
+    }
+
+    res.status(200).send()
+}
+export default {listar, buscar, criar, atualizar, excluir};
