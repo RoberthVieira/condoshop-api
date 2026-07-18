@@ -7,6 +7,6 @@ router.get('/', moradoresController.listar);
 router.get('/:id', moradoresController.buscar);
 router.post('/', moradoresController.criar);
 router.put('/:id', moradoresController.atualizar);
-router.delete('/:id', moradoresController.excluir);
+router.delete('/:id',  moradoresController.excluir);
 
 export default router;
