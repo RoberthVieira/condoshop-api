@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CadastrarProdutoBody, Produto } from "../types/index.js";
+import { CadastrarProdutoBody, Produto } from "../@types/index.js";
 import produtosModel from "../models/produtosModel.js";
 
 interface ProdutosParams {

@@ -1,6 +1,6 @@
 import prisma from "../database/prisma.js";
 import { Morador } from "../generated/prisma/client.js";
-import { RoleUsuario } from "../types/index.js";
+import { RoleUsuario } from "../@types/index.js";
 
 async function findAll(): Promise<Morador[]>{
     return await prisma.morador.findMany();
