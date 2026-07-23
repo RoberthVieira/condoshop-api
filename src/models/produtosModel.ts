@@ -1,56 +1,52 @@
-import { Produto } from "../types/index.js";
+import prisma from "../database/prisma.js";
+import { Produto } from "../generated/prisma/client.js";
 
-const produtos: Produto[] = [
-    {id: 1, nome: 'Agua Mineral', descricao: 'Agua Mineral 500ml', preco: 2.40, estoque: 25, categoria_id: 2},
-    {id: 2, nome: 'Mini Pizza Congelada', descricao: 'Mini Pizza Sabor Calabresa', preco: 10.00, estoque: 8, categoria_id: 3},
-    {id: 3, nome: 'Snaduiche Natural', descricao: 'Sanduiche Natural: Presunto Mussarela, Patê de frango, alface, tomate, hamburger', preco: 8.40, estoque: 15, categoria_id: 4}
-];
 
-function findAll(): Produto[] {
-    return produtos;
+async function findAll(): Promise<Produto[]> {
+    return await prisma.produto.findMany();
 };
 
-function findById(id: number): Produto | undefined {
-    return produtos.find(p => p.id === id);
+async function findById(id: number): Promise<Produto | null> {
+    return await prisma.produto.findUnique({
+        where: { id }
+    })
 }
 
-function create(nome: string, descricao:string, preco:number, estoque:number, categoria_id:number, imagem?:string ): Produto {
-    const novoProduto = {
-        id: produtos.length + 1,
-        nome,
-        descricao,
-        preco,
-        estoque,
-        categoria_id,
-        imagem
-    };
+async function create(
+    nome: string, 
+    descricao:string, 
+    preco:number, 
+    estoque:number, 
+    categoriaId:number, 
+    imagem?:string,
+    condominioId?: number
 
-    produtos.push(novoProduto);
+): Promise<Produto> {
+    const novoProduto = await prisma.produto.create({
+        data: {
+            nome,
+            descricao,
+            preco,
+            estoque,
+            categoriaId,
+            imagem,
+            condominioId: 1
+        }
+    })
     return novoProduto;
 };
 
-function update(id:number, dados: Partial<Produto>): Produto | undefined {
-    const produto = findById(id);
-
-    if(!produto) return undefined;
-
-    if(dados.nome) produto.nome = dados.nome;
-    if(dados.descricao) produto.descricao = dados.descricao;
-    if(dados.preco) produto.preco = dados.preco;
-    if(dados.estoque) produto.estoque = dados.estoque;
-    if(dados.categoria_id) produto.categoria_id = dados.categoria_id;
-    if(dados.imagem) produto.imagem = dados.imagem;
-
-    return produto
+async function update(id:number, dados: Partial<Produto>): Promise<Produto> {
+    return await prisma.produto.update({
+        where: { id },
+        data: dados
+    })
 }
 
-function remove(id:number): boolean {
-    const index = produtos.findIndex(p => p.id === id);
-
-    if(index === -1) return false;
-    
-    produtos.splice(index, 1)
-    return true
+async function remove(id:number): Promise<void> {
+    await prisma.produto.delete({
+        where: { id }
+    })
 }
 
 export default {findAll, findById, create, update, remove};

@@ -40,6 +40,7 @@ model Produto {
   descricao    String
   preco        Float
   estoque      Int
+  categoriaId  Int?
   imagem       String?
   condominioId Int
   condominio   Condominio @relation(fields: [condominioId], references: [id])
