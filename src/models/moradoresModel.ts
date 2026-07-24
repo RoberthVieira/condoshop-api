@@ -3,12 +3,29 @@ import { Morador } from "../generated/prisma/client.js";
 import { RoleUsuario } from "../@types/index.js";
 
 async function findAll(): Promise<Morador[]>{
-    return await prisma.morador.findMany();
+    return await prisma.morador.findMany({
+        include:{
+            condominio: {
+                select: {
+                    nome: true,
+                    codigo: true
+                }
+            }
+        }
+    });
 };
 
 async function findById(id: number): Promise<Morador | null> {
     return await prisma.morador.findUnique({
-        where: { id }
+        where: { id },
+        include:{
+            condominio:{
+                select:{
+                    nome: true,
+                    codigo: true
+                }
+            }
+        }
     })
 }
 

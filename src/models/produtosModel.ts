@@ -3,12 +3,29 @@ import { Produto } from "../generated/prisma/client.js";
 
 
 async function findAll(): Promise<Produto[]> {
-    return await prisma.produto.findMany();
+    return await prisma.produto.findMany({
+        include: {
+            condominio: {
+                select: {
+                    nome: true,
+                    codigo: true
+                }
+            }
+        }
+    });
 };
 
 async function findById(id: number): Promise<Produto | null> {
     return await prisma.produto.findUnique({
-        where: { id }
+        where: { id },
+        include: {
+            condominio: {
+                select: {
+                    nome: true,
+                    codigo: true
+                }
+            }
+        }
     })
 }
 
