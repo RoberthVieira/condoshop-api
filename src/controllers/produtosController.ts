@@ -7,7 +7,11 @@ interface ProdutosParams {
 }
 
 async function listar(req: Request, res:Response): Promise<void> {
-    const produtos = await produtosModel.findAll()
+    const pagina =  Number(req.query.pagina) || 1
+    const limite = Number(req.query.limite) || 10
+    const busca = req.query.busca as string || ''
+
+    const produtos = await produtosModel.findAll(busca, pagina, limite)
     res.status(200).json({data: produtos});
 };
 
