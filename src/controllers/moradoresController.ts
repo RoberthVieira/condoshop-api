@@ -1,19 +1,22 @@
 import { Request, Response } from "express";
-import { CadastrarNovoMoradorBody, Morador } from "../types/index.js";
+import { CadastrarNovoMoradorBody, Morador } from "../@types/index.js";
 import moradoresModel from "../models/moradoresModel.js";
 
 interface MoradorParams {
     id: string
 }
 
-function listar(req:Request, res:Response): void {
-    const moradores = moradoresModel.findAll()
+async function listar(req:Request, res:Response): Promise<void> {
+    const pagina = Number(req.query.pagina) || 1;
+    const limite = Number(req.query.limite) || 10;
+
+    const moradores = await moradoresModel.findAll(pagina, limite)
     res.status(200).json({data: moradores});
 };
 
-function buscar(req:Request<MoradorParams>, res:Response): void {
+async function buscar(req:Request<MoradorParams>, res:Response): Promise<void> {
     const { id } = req.params;
-    const morador = moradoresModel.findById(Number(id));
+    const morador = await moradoresModel.findById(Number(id));
 
     if(!morador){
         res.status(404).json({erro: "Usuario não encontrado"})
@@ -23,31 +26,31 @@ function buscar(req:Request<MoradorParams>, res:Response): void {
     res.status(200).json({data:  morador });
 }
 
-function criar(req:Request<{}, {}, CadastrarNovoMoradorBody>, res:Response): void {
-    const {nome, email, senha, condominio_id, role} = req.body;
+async function criar(req:Request<{}, {}, CadastrarNovoMoradorBody>, res:Response): Promise<void> {
+    const {nome, email, senha, condominioId, role} = req.body;
 
-    if(!nome || !email || !senha || !condominio_id || !role){
+    if(!nome || !email || !senha || !condominioId || !role){
         res.status(400).json({erro: "Os campos nome, email, senha, condominio_id e role são obrigatórios"});
         return;
     }
 
-    const novoMorador = moradoresModel.create(nome, email, senha, condominio_id, role)
+    const novoMorador = await moradoresModel.create(nome, email, senha, condominioId, role)
 
     res.status(201).json({data: novoMorador });
 };
 
-function atualizar(req:Request<MoradorParams, {}, Partial<Morador>>, res:Response): void {
+async function atualizar(req:Request<MoradorParams, {}, Partial<Morador>>, res:Response): Promise<void> {
     const { id } = req.params;
-    const {nome, email, senha, condominio_id, role} = req.body;
+    const {nome, email, senha, condominioId, role} = req.body;
     const morador = {
         nome,
         email,
         senha,
-        condominio_id,
+        condominioId,
         role
     }
 
-    const moradorAtualizado = moradoresModel.update(Number(id), morador)
+    const moradorAtualizado = await moradoresModel.update(Number(id), morador)
 
     if(!moradorAtualizado){
         res.status(404).json({erro: "Morador não encontrado"})
@@ -57,16 +60,12 @@ function atualizar(req:Request<MoradorParams, {}, Partial<Morador>>, res:Respons
     res.status(200).json({mensagem: "Dados alterados com sucesso!"})
 }
 
-function excluir(req:Request, res:Response): void {
+async function excluir(req:Request, res:Response): Promise<void> {
     const { id } = req.params
 
-    const excluir = moradoresModel.remove(Number(id));
-
-    if(!excluir){
-        res.status(404).json({erro: "id do moraador não encontrado"})
-        return
-    }
+    await moradoresModel.remove(Number(id));
 
     res.status(200).send()
 }
+
 export default {listar, buscar, criar, atualizar, excluir};

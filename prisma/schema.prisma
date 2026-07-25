@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Condominio {
+  id       Int     @id @default(autoincrement())
+  nome     String  
+  endereco String
+  codigo   String  @unique
+
+  moradores Morador[]
+  produtos  Produto[]
+
+  createdAt DateTime @default(now())
+}
+
+model Morador {
+  id            Int       @id @default(autoincrement())
+  nome          String    
+  email         String    @unique
+  senha         String   
+  role          String    @default("morador")
+  condominioId  Int
+  condominio    Condominio @relation(fields: [condominioId], references: [id])
+
+  pedidos Pedido[]
+
+  createdAt DateTime @default(now())
+}
+
+model Produto {
+  id           Int         @id @default(autoincrement())
+  nome         String
+  descricao    String
+  preco        Float
+  estoque      Int
+  categoriaId  Int?
+  imagem       String?
+  condominioId Int
+  condominio   Condominio @relation(fields: [condominioId], references: [id])
+
+  itensPedido  ItemPedido[]
+
+  createdAt DateTime @default(now())
+}
+
+model Pedido {
+  id         Int          @id @default(autoincrement())
+  status     String       @default("pendente")
+  total      Float
+  moradorId  Int
+  morador    Morador      @relation(fields: [moradorId], references: [id])
+
+  itens  ItemPedido[]
+  ticket Ticket?
+
+  createdAt DateTime @default(now())
+}
+
+model ItemPedido {
+  id             Int        @id @default(autoincrement())
+  quantidade     Int   
+  precoUnitario  Float
+  pedidoId       Int
+  pedido         Pedido     @relation(fields: [pedidoId], references: [id])
+  produtoId      Int
+  produto        Produto    @relation(fields: [produtoId], references: [id])
+}
+
+model Ticket {
+  id        Int       @id @default(autoincrement())
+  codigo    String    @unique
+  usado     Boolean   @default(false)
+  pedidoId  Int       @unique
+  pedido    Pedido    @relation(fields: [pedidoId], references: [id])
+
+  createdAt DateTime @default(now())
+}

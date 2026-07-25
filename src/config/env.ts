@@ -7,7 +7,7 @@ if(!process.env.JWT_SECRET){
 }
 
 if (!process.env.DATABASE_URL) {
-    //throw new Error('DATABASE_URL é obrigatória')
+    throw new Error('DATABASE_URL é obrigatória')
 }
 
 export const env = {
@@ -15,5 +15,5 @@ export const env = {
     APP_NAME: process.env.APP_NAME,
     NODE_ENV: process.env.NODE_ENV ?? 'development',
     //JWT_SECRET: process.env.JWT_SECRET,
-    //DATABASE_URL: process.env.DATABASE_URL,
+    DATABASE_URL: process.env.DATABASE_URL,
 }

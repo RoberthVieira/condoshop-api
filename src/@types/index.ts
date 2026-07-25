@@ -16,7 +16,7 @@ interface Produto {
     descricao: string
     preco: number
     estoque: number
-    categoria_id: number
+    categoriaId: number
     imagem?: string 
 }
 
@@ -25,7 +25,7 @@ interface Morador {
     nome: string
     email: string
     senha: string
-    condominio_id: number
+    condominioId: number
     role: RoleUsuario
 }
 
@@ -34,7 +34,7 @@ interface CadastrarProdutoBody {
     descricao: string
     preco: number
     estoque: number
-    categoria_id: number
+    categoriaId: number
     imagem?: string 
 } 
 
@@ -42,7 +42,7 @@ interface CadastrarNovoMoradorBody {
     nome: string
     email: string
     senha: string
-    condominio_id: number
+    condominioId: number
     role: RoleUsuario
 }
 

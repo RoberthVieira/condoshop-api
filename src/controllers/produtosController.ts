@@ -1,19 +1,23 @@
 import { Request, Response } from "express";
-import { CadastrarProdutoBody, Produto } from "../types/index.js";
+import { CadastrarProdutoBody, Produto } from "../@types/index.js";
 import produtosModel from "../models/produtosModel.js";
 
 interface ProdutosParams {
     id: string
 }
 
-function listar(req: Request, res:Response): void {
-    const produtos = produtosModel.findAll()
+async function listar(req: Request, res:Response): Promise<void> {
+    const pagina =  Number(req.query.pagina) || 1
+    const limite = Number(req.query.limite) || 10
+    const busca = req.query.busca as string || ''
+
+    const produtos = await produtosModel.findAll(busca, pagina, limite)
     res.status(200).json({data: produtos});
 };
 
-function buscar(req:Request<ProdutosParams>, res:Response): void {
+async function buscar(req:Request<ProdutosParams>, res:Response): Promise<void> {
     const { id } = req.params;
-    const produto = produtosModel.findById(Number(id))
+    const produto = await produtosModel.findById(Number(id))
 
     if(!produto){
         res.status(404).json({erro: 'Produto não encontrado'})
@@ -23,31 +27,31 @@ function buscar(req:Request<ProdutosParams>, res:Response): void {
     res.status(200).json({data: produto });
 };
 
-function criar(req:Request<{}, {}, CadastrarProdutoBody>, res:Response): void {
-    const {nome, descricao, preco, estoque, categoria_id, imagem} = req.body;
+async function criar(req:Request<{}, {}, CadastrarProdutoBody>, res:Response): Promise<void> {
+    const {nome, descricao, preco, estoque, categoriaId, imagem} = req.body;
     
-    if(!nome || !descricao || !preco || !estoque || !categoria_id) {
+    if(!nome || !descricao || !preco || !estoque || !categoriaId) {
         res.status(400).json({erro: "Nome, descrição, preço e estoque são obrigatórios"});
         return;
     }
 
-    const novoProduto = produtosModel.create(nome, descricao, preco, estoque, categoria_id, imagem)
+    const novoProduto = await produtosModel.create(nome, descricao, preco, estoque, categoriaId, imagem)
 
     res.status(201).json({data: novoProduto});
 };
 
-function atualizar(req:Request<ProdutosParams, {}, Partial<Produto>>, res:Response): void {
+async function atualizar(req:Request<ProdutosParams, {}, Partial<Produto>>, res:Response): Promise<void> {
     const { id } = req.params
-    const {nome, descricao, preco, estoque, categoria_id, imagem} = req.body 
+    const {nome, descricao, preco, estoque, categoriaId, imagem} = req.body 
     const produto = {
         nome,
         descricao,
         preco,
         estoque,
-        categoria_id,
+        categoriaId,
         imagem
     }
-    const produtoAtualizado = produtosModel.update(Number(id), produto);
+    const produtoAtualizado = await produtosModel.update(Number(id), produto);
 
     if(!produtoAtualizado){
         res.status(404).json({erro: 'Produto não encontrado'});
@@ -57,14 +61,10 @@ function atualizar(req:Request<ProdutosParams, {}, Partial<Produto>>, res:Respon
     res.status(200).json({mensagem: "Produto alterado com sucesso!"})
 };
 
-function excluir(req:Request, res:Response): void {
+async function excluir(req:Request, res:Response): Promise<void>{
     const { id } = req.params;
-    const excluir = produtosModel.remove(Number(id));
 
-    if(!excluir){
-        res.status(404).json("Produto não encontrado")
-        return
-    }
+    await produtosModel.remove(Number(id));
 
     res.status(200).send()
 }
