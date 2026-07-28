@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt';
+import jwt  from 'jsonwebtoken';
 import authModel from '../models/authModel.js';
+import { env } from '../config/env.js';
 import { Request, Response } from 'express';
 
 async function registro(req: Request, res:Response): Promise<void> {
@@ -22,4 +24,39 @@ async function registro(req: Request, res:Response): Promise<void> {
     res.status(201).json({ data: { id: morador.id, nome: morador.nome, email: morador.email } })
 }
 
-export default {registro};
+async function login(req: Request, res:Response): Promise<void> {
+    const {email, senha} = req.body;
+
+    if(!email || !senha){
+        res.status(400).json({err: "Preencha os campos para efetuar o login!"})
+        return
+    }
+
+    const morador = await authModel.findByEmail(email);
+    if(!morador) {
+        res.status(401).json({erro: "Email ou senha incorretos"})
+        return 
+    }
+
+    const senhaCorreta = await bcrypt.compare(senha, morador.senha)
+    if(!senhaCorreta){ 
+        res.status(401).json({erro: "Email ou senha incorretos"})
+        return
+    }
+
+    const token = jwt.sign(
+        {id: morador.id, role: morador.role},
+        process.env.JWT_SECRET!,
+        {expiresIn: '7d'}
+    )
+
+    res.status(200).json({token, morador: {
+        id: morador.id,
+        nome: morador.nome,
+        email: morador.email,
+        condominio: morador.condominioId,
+        role: morador.role
+    }})
+}
+
+export default {registro, login};
