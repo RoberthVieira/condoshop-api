@@ -7,11 +7,14 @@ import tratadorDeErro from './middlewares/tratadorDeErros.js';
 import naoEncontrado from './middlewares/naoEncrontado.js';
 import validarJson from './middlewares/validarJson.js';
 import logararErros from './middlewares/logarErros.js';
+import authRouter from './routes/auth.js'
 
 const server = express();
 server.use(express.json());
 
 server.use(logger);
+
+server.use('/auth', authRouter)
 
 server.get('/', (req: Request, res:Response) => {
     res.status(200).json({data : {projeto: 'CondoShop', versao: '1.0'}});
