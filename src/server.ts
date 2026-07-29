@@ -8,6 +8,7 @@ import naoEncontrado from './middlewares/naoEncrontado.js';
 import validarJson from './middlewares/validarJson.js';
 import logararErros from './middlewares/logarErros.js';
 import authRouter from './routes/auth.js'
+import autenticar from './middlewares/autenticar.js';
 
 const server = express();
 server.use(express.json());
@@ -26,8 +27,8 @@ server.get('/status', (req: Request, res: Response) => {
 
 server.use(validarJson);
 
-server.use('/moradores', moradoresRouter);
-server.use('/produtos', produtosRouter);
+server.use('/moradores', autenticar, moradoresRouter);
+server.use('/produtos', autenticar, produtosRouter);
 
 server.use(naoEncontrado);
 server.use(logararErros)
