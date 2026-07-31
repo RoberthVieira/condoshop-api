@@ -39,7 +39,7 @@ async function criar(req:Request<{}, {}, CadastrarNovoMoradorBody>, res:Response
     res.status(201).json({data: novoMorador });
 };
 
-async function atualizar(req:Request<MoradorParams, {}, Partial<Morador>>, res:Response): Promise<void> {
+async function atualizar(req:Request, res:Response): Promise<void> {
     const { id } = req.params;
     const {nome, email, senha, condominioId, role} = req.body;
     const morador = {

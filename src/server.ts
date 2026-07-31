@@ -15,18 +15,18 @@ server.use(express.json());
 
 server.use(logger);
 
+//ENTRADA NO SISTEMA
 server.use('/auth', authRouter)
-
 server.get('/', (req: Request, res:Response) => {
     res.status(200).json({data : {projeto: 'CondoShop', versao: '1.0'}});
 });
-
 server.get('/status', (req: Request, res: Response) => {
     res.status(200).json({status: 'online'})
 });
 
 server.use(validarJson);
 
+//ACESSO AS PRINCIPAIS ROTAS 
 server.use('/moradores', autenticar, moradoresRouter);
 server.use('/produtos', autenticar, produtosRouter);
 

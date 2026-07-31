@@ -1,12 +1,13 @@
 import { Router } from "express";
+import apenasAdmin from "../middlewares/apenasAdmin.js";
 import moradoresController from "../controllers/moradoresController.js";
 
 const router = Router();
 
 router.get('/', moradoresController.listar);
 router.get('/:id', moradoresController.buscar);
-router.post('/', moradoresController.criar);
-router.put('/:id', moradoresController.atualizar);
-router.delete('/:id',  moradoresController.excluir);
+router.post('/', apenasAdmin, moradoresController.criar);
+router.put('/:id', apenasAdmin, moradoresController.atualizar);
+router.delete('/:id', apenasAdmin, moradoresController.excluir);
 
 export default router;
