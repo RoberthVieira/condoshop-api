@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import jwt  from 'jsonwebtoken';
 import authModel from '../models/authModel.js';
-import { env } from '../config/env.js';
 import { Request, Response } from 'express';
+import { loginSchema, registroSchema } from '../schemas/authSchema.js';
 
 async function registro(req: Request, res:Response): Promise<void> {
     const {nome, email, senha, condominioId, role} = req.body;
