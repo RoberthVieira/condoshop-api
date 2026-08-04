@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { CadastrarNovoMoradorBody, Morador } from "../@types/index.js";
 import { moradorSchema, moradorUpdateSchema } from "../schemas/moradorSchema.js";
 import moradoresModel from "../models/moradoresModel.js";
-import { error } from "node:console";
 
 interface MoradorParams {
     id: string
@@ -32,7 +31,7 @@ async function criar(req:Request<{}, {}, CadastrarNovoMoradorBody>, res:Response
    const resultados =  moradorSchema.safeParse(req.body)
 
     if(!resultados.success){
-        res.status(400).json({erro: resultados.error})
+        res.status(400).json({erro: resultados.error.issues})
         return
     }
 
@@ -46,17 +45,12 @@ async function atualizar(req:Request, res:Response): Promise<void> {
     const { id } = req.params;
     const resultados = moradorUpdateSchema.safeParse(req.body)
 
-    if(!resultados.success){
-        res.status(404).json({erro: resultados.error})
+    if(!id || !resultados.success){
+        res.status(400).json({erro: resultados.error?.issues})
         return
     }
 
-    const moradorAtualizado = await moradoresModel.update(Number(id), resultados.data)
-
-    if(!moradorAtualizado){
-        res.status(404).json({erro: "Morador não encontrado"})
-        return
-    }
+    await moradoresModel.update(Number(id), resultados.data)
 
     res.status(200).json({mensagem: "Dados alterados com sucesso!"})
 }

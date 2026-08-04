@@ -1,16 +1,19 @@
 import bcrypt from 'bcrypt';
 import jwt  from 'jsonwebtoken';
 import authModel from '../models/authModel.js';
+import { env } from '../config/env.js'
 import { Request, Response } from 'express';
 import { loginSchema, registroSchema } from '../schemas/authSchema.js';
 
 async function registro(req: Request, res:Response): Promise<void> {
-    const {nome, email, senha, condominioId, role} = req.body;
+    const resultados = registroSchema.safeParse(req.body);
 
-    if(!nome || !email || !senha || !condominioId || !role) {
+    if(!resultados.success) {
         res.status(400).json({erro: "Preencha os dados corretamente"})
         return
     }
+
+    const { nome, email, senha, condominioId, role} = resultados.data
 
     const moradorExistente = await authModel.findByEmail(email);
     if(moradorExistente){
@@ -25,12 +28,14 @@ async function registro(req: Request, res:Response): Promise<void> {
 }
 
 async function login(req: Request, res:Response): Promise<void> {
-    const {email, senha} = req.body;
+    const resultados = loginSchema.safeParse(req.body)
 
-    if(!email || !senha){
-        res.status(400).json({err: "Preencha os campos para efetuar o login!"})
+    if(!resultados.success){
+        res.status(400).json({err: resultados.error.issues})
         return
     }
+
+    const { email, senha} = resultados.data
 
     const morador = await authModel.findByEmail(email);
     if(!morador) {
@@ -46,7 +51,7 @@ async function login(req: Request, res:Response): Promise<void> {
 
     const token = jwt.sign(
         {id: morador.id, role: morador.role},
-        process.env.JWT_SECRET!,
+        env.JWT_SECRET!,
         {expiresIn: '7d'}
     )
 
