@@ -8,26 +8,27 @@ import naoEncontrado from './middlewares/naoEncrontado.js';
 import validarJson from './middlewares/validarJson.js';
 import logararErros from './middlewares/logarErros.js';
 import authRouter from './routes/auth.js'
+import autenticar from './middlewares/autenticar.js';
 
 const server = express();
 server.use(express.json());
 
 server.use(logger);
 
+//ENTRADA NO SISTEMA
 server.use('/auth', authRouter)
-
 server.get('/', (req: Request, res:Response) => {
     res.status(200).json({data : {projeto: 'CondoShop', versao: '1.0'}});
 });
-
 server.get('/status', (req: Request, res: Response) => {
     res.status(200).json({status: 'online'})
 });
 
 server.use(validarJson);
 
-server.use('/moradores', moradoresRouter);
-server.use('/produtos', produtosRouter);
+//ACESSO AS PRINCIPAIS ROTAS 
+server.use('/moradores', autenticar, moradoresRouter);
+server.use('/produtos', autenticar, produtosRouter);
 
 server.use(naoEncontrado);
 server.use(logararErros)

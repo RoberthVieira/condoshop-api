@@ -46,4 +46,9 @@ interface CadastrarNovoMoradorBody {
     role: RoleUsuario
 }
 
-export {ApiResponse, ApiError, StatusPedido, RoleUsuario, Produto, Morador, CadastrarProdutoBody, CadastrarNovoMoradorBody};
+interface JwtPayloadCustom {
+    id: number,
+    role: string
+}
+
+export {ApiResponse, ApiError, StatusPedido, RoleUsuario, Produto, Morador, CadastrarProdutoBody, CadastrarNovoMoradorBody, JwtPayloadCustom};

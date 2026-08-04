@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { CadastrarProdutoBody, Produto } from "../@types/index.js";
+import { produtosSchema } from "../schemas/produtoSchema.js";
 import produtosModel from "../models/produtosModel.js";
 
 interface ProdutosParams {
@@ -40,7 +41,7 @@ async function criar(req:Request<{}, {}, CadastrarProdutoBody>, res:Response): P
     res.status(201).json({data: novoProduto});
 };
 
-async function atualizar(req:Request<ProdutosParams, {}, Partial<Produto>>, res:Response): Promise<void> {
+async function atualizar(req:Request, res:Response): Promise<void> {
     const { id } = req.params
     const {nome, descricao, preco, estoque, categoriaId, imagem} = req.body 
     const produto = {
