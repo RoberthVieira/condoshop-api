@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { CadastrarProdutoBody, Produto } from "../@types/index.js";
-import { produtosSchema } from "../schemas/produtoSchema.js";
+import { produtosSchema, produtoUpdateSchema } from "../schemas/produtoSchema.js";
 import produtosModel from "../models/produtosModel.js";
 
 interface ProdutosParams {
@@ -29,13 +29,14 @@ async function buscar(req:Request<ProdutosParams>, res:Response): Promise<void> 
 };
 
 async function criar(req:Request<{}, {}, CadastrarProdutoBody>, res:Response): Promise<void> {
-    const {nome, descricao, preco, estoque, categoriaId, imagem} = req.body;
-    
-    if(!nome || !descricao || !preco || !estoque || !categoriaId) {
-        res.status(400).json({erro: "Nome, descrição, preço e estoque são obrigatórios"});
-        return;
-    }
+    const resultado = produtosSchema.safeParse(req.body)
 
+    if(!resultado.success){
+        res.status(400).json({erro: resultado.error.issues })
+        return
+    }
+    
+    const { nome, descricao, preco, estoque, categoriaId, imagem } = resultado.data
     const novoProduto = await produtosModel.create(nome, descricao, preco, estoque, categoriaId, imagem)
 
     res.status(201).json({data: novoProduto});
@@ -43,21 +44,14 @@ async function criar(req:Request<{}, {}, CadastrarProdutoBody>, res:Response): P
 
 async function atualizar(req:Request, res:Response): Promise<void> {
     const { id } = req.params
-    const {nome, descricao, preco, estoque, categoriaId, imagem} = req.body 
-    const produto = {
-        nome,
-        descricao,
-        preco,
-        estoque,
-        categoriaId,
-        imagem
-    }
-    const produtoAtualizado = await produtosModel.update(Number(id), produto);
+    const resultados = produtoUpdateSchema.safeParse(req.body) 
 
-    if(!produtoAtualizado){
-        res.status(404).json({erro: 'Produto não encontrado'});
+    if(!id || !resultados.success){
+        res.status(400).json({erro: resultados.error?.issues});
         return
     };
+
+    await produtosModel.update(Number(id), resultados.data)
 
     res.status(200).json({mensagem: "Produto alterado com sucesso!"})
 };

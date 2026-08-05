@@ -8,3 +8,5 @@ export const produtosSchema = z.object({
     categoriaId: z.number(), 
     imagem: z.string().optional()
 })
+
+export const produtoUpdateSchema = produtosSchema.partial();
