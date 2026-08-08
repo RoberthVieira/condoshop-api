@@ -19,6 +19,11 @@ async function criar(req:Request, res:Response): Promise<void> {
 async function listar(req:Request,  res:Response): Promise<void> {
     const moradorId = Number(req.params.id)
 
+    if(req.morador!.id !== moradorId && req.morador!.role !== 'admin'){
+        res.status(403).json({ erro: 'Acesso negado' })
+        return
+    }
+
     const pedidos = await pedidosModel.listarPorMorador(moradorId)
     res.status(200).json({pedidos})
 }
