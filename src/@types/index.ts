@@ -51,4 +51,9 @@ interface JwtPayloadCustom {
     role: string
 }
 
-export {ApiResponse, ApiError, StatusPedido, RoleUsuario, Produto, Morador, CadastrarProdutoBody, CadastrarNovoMoradorBody, JwtPayloadCustom};
+interface ItemBody {
+    produtoId: number
+    quantidade: number
+}
+
+export {ApiResponse, ApiError, StatusPedido, RoleUsuario, Produto, Morador, CadastrarProdutoBody, CadastrarNovoMoradorBody, JwtPayloadCustom, ItemBody};

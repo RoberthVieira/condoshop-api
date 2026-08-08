@@ -1,13 +1,18 @@
 import express, {Request, Response} from 'express'
 import { env } from './config/env.js';
+
+//ROTAS
 import produtosRouter from './routes/produtosRouter.js';
 import moradoresRouter from './routes/moradoresRouter.js'
+import authRouter from './routes/auth.js'
+import pedidosRouter from './routes/pedidosRouter.js'
+
+//MIDDLEWARES
 import logger from './middlewares/logger.js';
 import tratadorDeErro from './middlewares/tratadorDeErros.js';
 import naoEncontrado from './middlewares/naoEncrontado.js';
 import validarJson from './middlewares/validarJson.js';
 import logararErros from './middlewares/logarErros.js';
-import authRouter from './routes/auth.js'
 import autenticar from './middlewares/autenticar.js';
 
 const server = express();
@@ -29,6 +34,7 @@ server.use(validarJson);
 //ACESSO AS PRINCIPAIS ROTAS 
 server.use('/moradores', autenticar, moradoresRouter);
 server.use('/produtos', autenticar, produtosRouter);
+server.use('/pedidos', autenticar, pedidosRouter)
 
 server.use(naoEncontrado);
 server.use(logararErros)
