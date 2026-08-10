@@ -6,6 +6,7 @@ import produtosRouter from './routes/produtosRouter.js';
 import moradoresRouter from './routes/moradoresRouter.js'
 import authRouter from './routes/auth.js'
 import pedidosRouter from './routes/pedidosRouter.js'
+import dashboardRouter from './routes/dashboardRouter.js'
 
 //MIDDLEWARES
 import logger from './middlewares/logger.js';
@@ -35,6 +36,7 @@ server.use(validarJson);
 server.use('/moradores', autenticar, moradoresRouter);
 server.use('/produtos', autenticar, produtosRouter);
 server.use('/pedidos', autenticar, pedidosRouter)
+server.use('/dashboard', autenticar, dashboardRouter)
 
 server.use(naoEncontrado);
 server.use(logararErros)
