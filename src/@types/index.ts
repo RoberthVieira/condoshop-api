@@ -56,4 +56,10 @@ interface ItemBody {
     quantidade: number
 }
 
-export {ApiResponse, ApiError, StatusPedido, RoleUsuario, Produto, Morador, CadastrarProdutoBody, CadastrarNovoMoradorBody, JwtPayloadCustom, ItemBody};
+interface ItemSessao {
+    nome: string,
+    preco: number,
+    quantidade: number
+}
+
+export {ApiResponse, ApiError, StatusPedido, RoleUsuario, Produto, Morador, CadastrarProdutoBody, CadastrarNovoMoradorBody, JwtPayloadCustom, ItemBody, ItemSessao};

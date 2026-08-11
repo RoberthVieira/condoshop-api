@@ -1,6 +1,8 @@
 import pedidosModel from '../models/pedidosModel.js';
 import { pedidosSchema } from '../schemas/pedidosSchema.js';
 import { Request, Response } from 'express'
+import stripeService from '../service/stripeService.js';
+import produtosModel from '../models/produtosModel.js';
 
 async function criar(req:Request, res:Response): Promise<void> {
     const moradorId = req.morador!.id
@@ -13,7 +15,20 @@ async function criar(req:Request, res:Response): Promise<void> {
 
     const pedidos = await pedidosModel.criarPedido(moradorId, resultado.data.itens)
 
-    res.status(201).json({pedidos})
+    const itensSessao = await Promise.all(
+        resultado.data.itens.map(async (item) => {
+            const produto = await produtosModel.findById(item.produtoId)
+            return {
+                nome: produto!.nome,
+                preco: produto!.preco,
+                quantidade: item.quantidade
+            }
+        })
+    )
+
+    const urlPagamento = await stripeService.criarSessaoDePagamento(pedidos.id, itensSessao)
+
+    res.status(201).json({pedidos, urlPagamento})
 }
 
 async function listar(req:Request,  res:Response): Promise<void> {
