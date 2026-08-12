@@ -49,4 +49,11 @@ async function listarPorMorador(moradorId: number) {
     })
 }
 
-export default {criarPedido, listarPorMorador}
+async function atualizarStatus(pedidoId: number, status: string) {
+    return await prisma.pedido.update({
+        where: { id: pedidoId},
+        data: { status }
+    })
+}
+
+export default {criarPedido, listarPorMorador, atualizarStatus}

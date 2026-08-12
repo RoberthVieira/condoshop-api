@@ -8,6 +8,8 @@ import authRouter from './routes/auth.js'
 import pedidosRouter from './routes/pedidosRouter.js'
 import dashboardRouter from './routes/dashboardRouter.js'
 
+import handleWebhook from './controllers/webhookController.js'
+
 //MIDDLEWARES
 import logger from './middlewares/logger.js';
 import tratadorDeErro from './middlewares/tratadorDeErros.js';
@@ -17,6 +19,7 @@ import logararErros from './middlewares/logarErros.js';
 import autenticar from './middlewares/autenticar.js';
 
 const server = express();
+server.post('/webhook', express.raw({type: 'application/json'}), handleWebhook)
 server.use(express.json());
 
 server.use(logger);
