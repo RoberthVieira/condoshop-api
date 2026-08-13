@@ -1,14 +1,15 @@
-import express, {Request, Response} from 'express'
+import express, {Request, Response} from 'express';
 import { env } from './config/env.js';
+import cors from 'cors';
 
 //ROTAS
 import produtosRouter from './routes/produtosRouter.js';
-import moradoresRouter from './routes/moradoresRouter.js'
-import authRouter from './routes/auth.js'
-import pedidosRouter from './routes/pedidosRouter.js'
-import dashboardRouter from './routes/dashboardRouter.js'
+import moradoresRouter from './routes/moradoresRouter.js';
+import authRouter from './routes/auth.js';
+import pedidosRouter from './routes/pedidosRouter.js';
+import dashboardRouter from './routes/dashboardRouter.js';
 
-import handleWebhook from './controllers/webhookController.js'
+import handleWebhook from './controllers/webhookController.js';
 
 //MIDDLEWARES
 import logger from './middlewares/logger.js';
@@ -19,6 +20,14 @@ import logararErros from './middlewares/logarErros.js';
 import autenticar from './middlewares/autenticar.js';
 
 const server = express();
+
+server.use(cors({
+    origin: env.FRONTEND_URL,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}))
+
 server.post('/webhook', express.raw({type: 'application/json'}), handleWebhook)
 server.use(express.json());
 
