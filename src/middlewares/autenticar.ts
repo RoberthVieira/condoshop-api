@@ -15,7 +15,11 @@ function autenticar(req: Request, res: Response, next: NextFunction): void {
 
     try{
         const payload = jwt.verify(token, env.JWT_SECRET!) as JwtPayloadCustom
-        req.morador = {id: payload.id, role: payload.role}
+        req.morador = {
+            id: payload.id, 
+            role: payload.role,
+            condominioId: payload.condominioId
+        }
         next()
     } catch {
         res.status(401).json({ erro: 'Token inválido ou expirado' })

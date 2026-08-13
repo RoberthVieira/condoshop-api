@@ -12,7 +12,7 @@ async function listar(req: Request, res:Response): Promise<void> {
     const limite = Number(req.query.limite) || 10
     const busca = req.query.busca as string || ''
 
-    const produtos = await produtosModel.findAll(busca, pagina, limite)
+    const produtos = await produtosModel.findAll(busca, pagina, limite, req.morador!.condominioId)
     res.status(200).json({data: produtos});
 };
 
@@ -37,7 +37,7 @@ async function criar(req:Request<{}, {}, CadastrarProdutoBody>, res:Response): P
     }
     
     const { nome, descricao, preco, estoque, categoriaId, imagem } = resultado.data
-    const novoProduto = await produtosModel.create(nome, descricao, preco, estoque, categoriaId, imagem)
+    const novoProduto = await produtosModel.create(nome, descricao, preco, estoque, categoriaId, req.morador!.condominioId, imagem)
 
     res.status(201).json({data: novoProduto});
 };

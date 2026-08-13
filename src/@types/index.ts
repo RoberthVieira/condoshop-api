@@ -48,7 +48,8 @@ interface CadastrarNovoMoradorBody {
 
 interface JwtPayloadCustom {
     id: number,
-    role: string
+    role: string,
+    condominioId: number
 }
 
 interface ItemBody {

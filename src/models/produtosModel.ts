@@ -2,13 +2,14 @@ import prisma from "../database/prisma.js";
 import { Produto } from "../generated/prisma/client.js";
 
 
-async function findAll(busca: string, pagina: number, limite: number): Promise<Produto[]> {
+async function findAll(busca: string, pagina: number, limite: number, condominioId: number): Promise<Produto[]> {
     const skip = (pagina - 1) * limite;
     return await prisma.produto.findMany({
         where: {
+            condominioId,
             nome: {
                 contains: busca,
-                mode: "insensitive"
+                mode: "insensitive",
             },
         },
         take: limite,
@@ -44,10 +45,9 @@ async function create(
     descricao:string, 
     preco:number, 
     estoque:number, 
-    categoriaId:number, 
+    categoriaId:number,
+    condominioId: number, 
     imagem?:string,
-    condominioId?: number
-
 ): Promise<Produto> {
     const novoProduto = await prisma.produto.create({
         data: {
@@ -57,7 +57,7 @@ async function create(
             estoque,
             categoriaId,
             imagem,
-            condominioId: 1
+            condominioId
         }
     })
     return novoProduto;

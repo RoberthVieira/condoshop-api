@@ -11,7 +11,7 @@ async function listar(req:Request, res:Response): Promise<void> {
     const pagina = Number(req.query.pagina) || 1;
     const limite = Number(req.query.limite) || 10;
 
-    const moradores = await moradoresModel.findAll(pagina, limite)
+    const moradores = await moradoresModel.findAll(pagina, limite, req.morador!.condominioId)
     res.status(200).json({data: moradores});
 };
 

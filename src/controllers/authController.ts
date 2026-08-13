@@ -50,7 +50,7 @@ async function login(req: Request, res:Response): Promise<void> {
     }
 
     const token = jwt.sign(
-        {id: morador.id, role: morador.role},
+        {id: morador.id, role: morador.role, condominioId: morador.condominioId},
         env.JWT_SECRET!,
         {expiresIn: '7d'}
     )
