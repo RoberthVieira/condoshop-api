@@ -42,6 +42,7 @@ model Produto {
   estoque      Int
   categoriaId  Int?
   imagem       String?
+  ativo        Boolean    @default(false)
   condominioId Int
   condominio   Condominio @relation(fields: [condominioId], references: [id])
 
@@ -62,7 +63,6 @@ model Pedido {
 
   createdAt DateTime @default(now())
 }
-
 model ItemPedido {
   id             Int        @id @default(autoincrement())
   quantidade     Int   
