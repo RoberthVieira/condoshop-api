@@ -42,7 +42,7 @@ model Produto {
   estoque      Int
   categoriaId  Int?
   imagem       String?
-  ativo        Boolean    @default(false)
+  ativo        Boolean    @default(true)
   condominioId Int
   condominio   Condominio @relation(fields: [condominioId], references: [id])
 
