@@ -9,5 +9,6 @@ router.get('/:id', produtosController.buscar);
 router.post('/', apenasAdmin, produtosController.criar);
 router.put('/:id', apenasAdmin, produtosController.atualizar);
 router.delete('/:id', apenasAdmin, produtosController.excluir);
+router.patch('/:id', apenasAdmin, produtosController.ativar);
 
 export default router;
