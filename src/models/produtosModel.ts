@@ -2,16 +2,27 @@ import prisma from "../database/prisma.js";
 import { Produto } from "../generated/prisma/client.js";
 
 
-async function findAll(busca: string, pagina: number, limite: number, condominioId: number): Promise<Produto[]> {
+async function findAll(busca: string, pagina: number, limite: number, condominioId: number, role: string, apenasInativos: boolean): Promise<Produto[]> {
     const skip = (pagina - 1) * limite;
+
+    const where: any = {
+        condominioId,
+        nome: {
+            contains: busca,
+            mode: "insensitive"
+        }
+    }
+
+    if(role !== 'admin'){
+        where.ativo = true
+    }
+
+    if(role === 'admin' && apenasInativos === true){
+        where.ativo = false
+    }
+
     return await prisma.produto.findMany({
-        where: {
-            condominioId,
-            nome: {
-                contains: busca,
-                mode: "insensitive",
-            },
-        },
+        where,
         take: limite,
         skip: skip,
         orderBy:{nome: "asc"},
@@ -71,9 +82,17 @@ async function update(id:number, dados: Partial<Produto>): Promise<Produto> {
 }
 
 async function remove(id:number): Promise<void> {
-    await prisma.produto.delete({
-        where: { id }
+    await prisma.produto.update({
+        where: { id },
+        data: { ativo: false }
     })
 }
 
-export default {findAll, findById, create, update, remove};
+async function active(id:number): Promise<void> {
+    await prisma.produto.update({
+        where: { id },
+        data: { ativo: true }
+    })
+}
+
+export default {findAll, findById, create, update, remove, active};

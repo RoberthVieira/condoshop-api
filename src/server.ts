@@ -21,9 +21,11 @@ import autenticar from './middlewares/autenticar.js';
 
 const server = express();
 
+server.set('etag', false);
+
 server.use(cors({
     origin: env.FRONTEND_URL,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }))

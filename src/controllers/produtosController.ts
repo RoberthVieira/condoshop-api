@@ -11,8 +11,9 @@ async function listar(req: Request, res:Response): Promise<void> {
     const pagina =  Number(req.query.pagina) || 1
     const limite = Number(req.query.limite) || 10
     const busca = req.query.busca as string || ''
+    const apenasInativos =  req.query.apenasInativos as string
 
-    const produtos = await produtosModel.findAll(busca, pagina, limite, req.morador!.condominioId)
+    const produtos = await produtosModel.findAll(busca, pagina, limite, req.morador!.condominioId, req.morador!.role, apenasInativos === 'true')
     res.status(200).json({data: produtos});
 };
 
@@ -64,4 +65,12 @@ async function excluir(req:Request, res:Response): Promise<void>{
     res.status(200).send()
 }
 
-export default {listar, buscar, criar, atualizar, excluir}
+async function ativar(req:Request, res:Response): Promise<void> {
+    const { id }  = req.params
+
+    await produtosModel.active(Number(id));
+
+    res.status(200).send()
+}
+
+export default {listar, buscar, criar, atualizar, excluir,  ativar}
