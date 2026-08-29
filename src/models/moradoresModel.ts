@@ -63,6 +63,23 @@ function update(id: number, dados: Partial<Morador>): Promise<Morador> {
 };
 
 async function remove(id: number): Promise<void> {
+    await prisma.itemPedido.deleteMany({
+        where: {
+            pedido: {
+                moradorId: id
+            }
+        }
+    })
+    await prisma.ticket.deleteMany({
+        where: {
+            pedido: {
+                moradorId: id
+            }
+        }
+    })
+    await prisma.pedido.deleteMany({
+        where: { moradorId: id }
+    })
     await prisma.morador.delete({
         where: { id }
     })
