@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CadastrarNovoMoradorBody, Morador } from "../@types/index.js";
+import { CadastrarNovoMoradorBody } from "../@types/index.js";
 import { moradorSchema, moradorUpdateSchema } from "../schemas/moradorSchema.js";
 import moradoresModel from "../models/moradoresModel.js";
 
