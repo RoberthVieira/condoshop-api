@@ -55,7 +55,12 @@ async function create(
     return novoMorador
 };
 
-function update(id: number, dados: Partial<Morador>): Promise<Morador> {
+async function update(id: number, dados: Partial<Morador>): Promise<Morador> {
+    if(dados.senha){
+        const bcrypt = await import('bcrypt')
+        dados.senha = await bcrypt.hash(dados.senha, 10)
+    }
+
     return prisma.morador.update({
         where: { id },
         data: dados
