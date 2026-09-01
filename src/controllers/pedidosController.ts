@@ -13,6 +13,20 @@ async function criar(req:Request, res:Response): Promise<void> {
         return
     }
 
+    for (const item of resultado.data.itens) {
+        const produto = await produtosModel.findById(item.produtoId)
+        
+        if (!produto) {
+            res.status(404).json({ erro: `Produto ${item.produtoId} não encontrado` })
+            return
+        }
+
+        if (produto.estoque < item.quantidade) {
+            res.status(400).json({ erro: `Estoque insuficiente para "${produto.nome}". Disponível: ${produto.estoque}` })
+            return
+        }
+    }
+
     const pedidos = await pedidosModel.criarPedido(moradorId, resultado.data.itens)
 
     const itensSessao = await Promise.all(

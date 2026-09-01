@@ -31,6 +31,19 @@ async function handleWebhook(req: Request, res:Response) {
                 pedidoId,
                 usado: false
             }})
+
+            const itenDoPedidos = await prisma.itemPedido.findMany({
+                where: { pedidoId }
+            })
+
+            for(const item of itenDoPedidos) {
+                await prisma.produto.update({
+                    where: {id: item.produtoId},
+                    data: {
+                        estoque: {decrement: item.quantidade}
+                    }
+                })
+            }
         }
         
         res.status(200).json({ recebido: true })
