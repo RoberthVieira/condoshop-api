@@ -4,7 +4,10 @@ async function getDashboard() {
     const totalMoradores = await prisma.morador.count();
     const totalProdutosCadastrados = await prisma.produto.count();
     const totalProdutosAtivos = await prisma.produto.count({
-        where:{estoque: {gt: 0}} //gt = greater than (maior que)
+        where:{
+            estoque: {gt: 0},//gt = greater than (maior que)
+            ativo: true
+        } 
     })
     const totalPedidos = await prisma.pedido.count();
 

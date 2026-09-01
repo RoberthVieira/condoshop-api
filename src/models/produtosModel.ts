@@ -21,6 +21,10 @@ async function findAll(busca: string, pagina: number, limite: number, condominio
         where.ativo = false
     }
 
+    if(role === 'admin' && apenasInativos === false){
+        where.ativo = true
+    }
+
     if(categoriaId){
         where.categoriaId = categoriaId
     }
