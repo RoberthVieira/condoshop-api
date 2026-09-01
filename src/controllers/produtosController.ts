@@ -12,8 +12,9 @@ async function listar(req: Request, res:Response): Promise<void> {
     const limite = Number(req.query.limite) || 10
     const busca = req.query.busca as string || ''
     const apenasInativos =  req.query.apenasInativos as string
+    const categoriaId = req.query.categoriaId ? Number(req.query.categoriaId) : undefined
 
-    const produtos = await produtosModel.findAll(busca, pagina, limite, req.morador!.condominioId, req.morador!.role, apenasInativos === 'true')
+    const produtos = await produtosModel.findAll(busca, pagina, limite, req.morador!.condominioId, req.morador!.role, apenasInativos === 'true', categoriaId)
     res.status(200).json({data: produtos});
 };
 

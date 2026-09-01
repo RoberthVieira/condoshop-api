@@ -8,6 +8,7 @@ import moradoresRouter from './routes/moradoresRouter.js';
 import authRouter from './routes/auth.js';
 import pedidosRouter from './routes/pedidosRouter.js';
 import dashboardRouter from './routes/dashboardRouter.js';
+import categoriaRrouter from './routes/categoriaRoutes.js'
 
 import handleWebhook from './controllers/webhookController.js';
 
@@ -49,6 +50,7 @@ server.use(validarJson);
 //ACESSO AS PRINCIPAIS ROTAS 
 server.use('/moradores', autenticar, moradoresRouter);
 server.use('/produtos', autenticar, produtosRouter);
+server.use('/categoria', autenticar, categoriaRrouter);
 server.use('/pedidos', autenticar, pedidosRouter)
 server.use('/dashboard', autenticar, dashboardRouter)
 

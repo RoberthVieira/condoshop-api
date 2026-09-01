@@ -41,6 +41,7 @@ model Produto {
   preco        Float
   estoque      Int
   categoriaId  Int?
+  categoria    Categoria? @relation(fields: [categoriaId], references: [id])
   imagem       String?
   ativo        Boolean    @default(true)
   condominioId Int
@@ -49,6 +50,12 @@ model Produto {
   itensPedido  ItemPedido[]
 
   createdAt DateTime @default(now())
+}
+
+model Categoria {
+  id        Int       @id @default(autoincrement())
+  nome      String    @unique
+  produtos  Produto[]
 }
 
 model Pedido {

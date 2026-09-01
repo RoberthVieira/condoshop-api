@@ -2,7 +2,7 @@ import prisma from "../database/prisma.js";
 import { Produto } from "../generated/prisma/client.js";
 
 
-async function findAll(busca: string, pagina: number, limite: number, condominioId: number, role: string, apenasInativos: boolean): Promise<Produto[]> {
+async function findAll(busca: string, pagina: number, limite: number, condominioId: number, role: string, apenasInativos: boolean, categoriaId?: number): Promise<Produto[]> {
     const skip = (pagina - 1) * limite;
 
     const where: any = {
@@ -19,6 +19,10 @@ async function findAll(busca: string, pagina: number, limite: number, condominio
 
     if(role === 'admin' && apenasInativos === true){
         where.ativo = false
+    }
+
+    if(categoriaId){
+        where.categoriaId = categoriaId
     }
 
     return await prisma.produto.findMany({
