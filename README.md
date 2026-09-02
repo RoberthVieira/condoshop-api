@@ -13,6 +13,7 @@ Backend do **CondoShop** — um e-commerce para mercadinhos de condomínio. Proj
 - **Cloudinary** — armazenamento de imagens
 
 ## 📁 Estrutura do projeto
+```
 src/
 ├── config/ # Variáveis de ambiente (env.ts)
 ├── controllers/ # Lógica de cada rota (recebe req, chama model, devolve res)
@@ -26,8 +27,10 @@ src/
 prisma/
 ├── schema.prisma # Definição dos models do banco
 └── migrations/ # Histórico de migrations
+```
 
 ## 🗃️ Modelo de dados
+```
 Condominio
 ├── Morador (tem pedidos)
 └── Produto (tem categoria, itensPedido)
@@ -36,6 +39,7 @@ Condominio
 Pedido
 ├── ItemPedido (produto + quantidade + preço)
 └── Ticket (código UUID gerado após pagamento)
+```
 
 ## 🔐 Autenticação e Autorização
 
