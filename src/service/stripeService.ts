@@ -19,8 +19,8 @@ async function criarSessaoDePagamento(pedidoId: number, itens: ItemSessao[]) {
         payment_method_types: ['card'],
         mode: 'payment',
         line_items: line_Items,
-        success_url: 'http://localhost:5173/sucesso',
-        cancel_url: 'http://localhost:5173/cancelado',
+        success_url: 'https://condoshop.vercel.app/sucesso',
+        cancel_url: 'https://condoshop.vercel.app/cancelado',
         metadata: {pedidoId: String(pedidoId)}
     })
 
